@@ -5,6 +5,10 @@ from example_py_multiple_dispatch.zoo import BD_SE3Pose, ROS_Pose, ROS_Transform
 from plum import Val  # type: ignore
 import plum
 
+# https://github.com/beartype/plum/issues/86#issuecomment-1607741292
+Val.__faithful__ = True
+plum.clear_all_cache()
+
 def test_1() -> None:
     # ultimately, we'd like to avoid the use of `Val here`
     # See https://github.com/beartype/plum/issues/85
