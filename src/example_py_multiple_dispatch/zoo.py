@@ -65,6 +65,7 @@ def conversion_method_from_signature(f):
     [type_from] = signature.types
     type_to = signature.return_type
     plum.promotion.add_conversion_method(type_from, type_to, f)
+    # do not return anything, because we do not want to define a function (e.g. `convert_whatever`)
 
 
 # `convert_whatever` is an arbitrary, inconsequential name.
@@ -91,3 +92,5 @@ def convert_whatever(from_: ROS_Transform) -> ROS_Pose:  # noqa: F811
 @conversion_method_from_signature # type: ignore[no-redef]
 def convert_whatever(from_: SpatialMath_SE3) -> ROS_Pose:  # noqa: F811
     return ROS_Pose(from_.data5)
+
+# at this point, `convert_whatever` is None, because the decorator does not return anything.
