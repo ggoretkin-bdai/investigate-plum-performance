@@ -1,19 +1,15 @@
 # Copyright (c) 2023 Boston Dynamics AI Institute, Inc.  All rights reserved.
 import random
+import functools
 
 from example_py_multiple_dispatch.zoo import BD_SE3Pose, ROS_Pose, ROS_Transform, SpatialMath_SE3, convert
 from plum import Val  # type: ignore
 import plum
 
 # https://github.com/beartype/plum/issues/86
-_cache_val = {}
+@functools.cache
 def ValMaker(arg):
-    if arg in _cache_val.keys():
-        return _cache_val[arg]
-    else:
-        v = Val(arg)
-        _cache_val[arg] = v
-        return v
+    return Val(arg)
 
 def test_1() -> None:
     # ultimately, we'd like to avoid the use of `Val here`
