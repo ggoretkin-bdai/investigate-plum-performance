@@ -1,6 +1,7 @@
 from typing import Any
 
 from plum import Val, dispatch, conversion_method  # type: ignore
+import plum
 
 # Val is kind of like `typing.Literal`, but not literally equivalent
 # See https://github.com/beartype/plum/issues/85
@@ -51,28 +52,42 @@ class SpatialMath_SE3:
     def __init__(self, data: Any) -> None:
         self.data5 = data
 
+def conversion_method_from_signature(f):
+    """Decorator to add a conversion method to convert an object from one
+    type to another.
+
+    Like `plum.conversion_method` but the arguments:
+        type_from (type): Type to convert from.
+        type_to (type): Type to convert to.
+    are extracted from the type annotations
+    """
+    signature = plum.extract_signature(f)
+    [type_from] = signature.types
+    type_to = signature.return_type
+    plum.promotion.add_conversion_method(type_from, type_to, f)
+
 
 # `convert_whatever` is an arbitrary, inconsequential name.
 
 # functionality of def _ros_pose_to_se3_pose(pose: Pose) -> SE3Pose:
-@conversion_method(type_from=ROS_Pose, type_to=BD_SE3Pose) # type: ignore[no-redef]
+@conversion_method_from_signature # type: ignore[no-redef]
 def convert_whatever(from_: ROS_Pose) -> BD_SE3Pose:  # noqa: F811
     return BD_SE3Pose(from_.data1)
 
 
 # functionality of def se3pose_to_bd_se3pose(transform: SE3Pose) -> BD_SE3Pose:
-@conversion_method(type_from=SpatialMath_SE3, type_to=BD_SE3Pose) # type: ignore[no-redef]
+@conversion_method_from_signature # type: ignore[no-redef]
 def convert_whatever(from_: SpatialMath_SE3) -> BD_SE3Pose:  # noqa: F811
     return BD_SE3Pose(from_.data5)
 
 
 # functionality of def to_ros_pose(pose: Transform | SE3Pose) -> Pose:
 # notice the absence of `if isinstance(pose, Pose)` elif chain (switch/case statement).
-@conversion_method(type_from=ROS_Transform, type_to=ROS_Pose) # type: ignore[no-redef]
+@conversion_method_from_signature # type: ignore[no-redef]
 def convert_whatever(from_: ROS_Transform) -> ROS_Pose:  # noqa: F811
     return ROS_Pose(from_.data2)
 
 
-@conversion_method(type_from=SpatialMath_SE3, type_to=ROS_Pose)# type: ignore[no-redef]
+@conversion_method_from_signature # type: ignore[no-redef]
 def convert_whatever(from_: SpatialMath_SE3) -> ROS_Pose:  # noqa: F811
     return ROS_Pose(from_.data5)
