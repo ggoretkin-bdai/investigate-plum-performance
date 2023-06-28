@@ -72,25 +72,25 @@ def conversion_method_from_signature(f):
 
 # functionality of def _ros_pose_to_se3_pose(pose: Pose) -> SE3Pose:
 @conversion_method_from_signature # type: ignore[no-redef]
-def convert_whatever(from_: ROS_Pose) -> BD_SE3Pose:  # noqa: F811
+def convert_whatever(from_: ROS_Pose) -> BD_SE3Pose:
     return BD_SE3Pose(from_.data1)
 
 
 # functionality of def se3pose_to_bd_se3pose(transform: SE3Pose) -> BD_SE3Pose:
 @conversion_method_from_signature # type: ignore[no-redef]
-def convert_whatever(from_: SpatialMath_SE3) -> BD_SE3Pose:  # noqa: F811
+def convert_whatever(from_: SpatialMath_SE3) -> BD_SE3Pose:
     return BD_SE3Pose(from_.data5)
 
 
 # functionality of def to_ros_pose(pose: Transform | SE3Pose) -> Pose:
 # notice the absence of `if isinstance(pose, Pose)` elif chain (switch/case statement).
 @conversion_method_from_signature # type: ignore[no-redef]
-def convert_whatever(from_: ROS_Transform) -> ROS_Pose:  # noqa: F811
+def convert_whatever(from_: ROS_Transform) -> ROS_Pose:
     return ROS_Pose(from_.data2)
 
 
 @conversion_method_from_signature # type: ignore[no-redef]
-def convert_whatever(from_: SpatialMath_SE3) -> ROS_Pose:  # noqa: F811
+def convert_whatever(from_: SpatialMath_SE3) -> ROS_Pose:
     return ROS_Pose(from_.data5)
 
 # at this point, `convert_whatever` is None, because the decorator does not return anything.
