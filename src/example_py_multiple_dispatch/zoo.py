@@ -1,6 +1,6 @@
 from typing import Any
 
-from plum import Val, dispatch  # type: ignore
+from plum import Val, dispatch, conversion_method  # type: ignore
 
 # Val is kind of like `typing.Literal`, but not literally equivalent
 # See https://github.com/beartype/plum/issues/85
@@ -52,25 +52,27 @@ class SpatialMath_SE3:
         self.data5 = data
 
 
+# `convert_whatever` is an arbitrary, inconsequential name.
+
 # functionality of def _ros_pose_to_se3_pose(pose: Pose) -> SE3Pose:
-@dispatch  # type: ignore[no-redef]
-def convert(to: Val[BD_SE3Pose], from_: ROS_Pose) -> BD_SE3Pose:  # noqa: F811
+@conversion_method(type_from=ROS_Pose, type_to=BD_SE3Pose) # type: ignore[no-redef]
+def convert_whatever(from_: ROS_Pose) -> BD_SE3Pose:  # noqa: F811
     return BD_SE3Pose(from_.data1)
 
 
 # functionality of def se3pose_to_bd_se3pose(transform: SE3Pose) -> BD_SE3Pose:
-@dispatch  # type: ignore[no-redef]
-def convert(to: Val[BD_SE3Pose], from_: SpatialMath_SE3) -> BD_SE3Pose:  # noqa: F811
+@conversion_method(type_from=SpatialMath_SE3, type_to=BD_SE3Pose) # type: ignore[no-redef]
+def convert_whatever(from_: SpatialMath_SE3) -> BD_SE3Pose:  # noqa: F811
     return BD_SE3Pose(from_.data5)
 
 
 # functionality of def to_ros_pose(pose: Transform | SE3Pose) -> Pose:
 # notice the absence of `if isinstance(pose, Pose)` elif chain (switch/case statement).
-@dispatch  # type: ignore[no-redef]
-def convert(to: Val[ROS_Pose], from_: ROS_Transform) -> ROS_Pose:  # noqa: F811
+@conversion_method(type_from=ROS_Transform, type_to=ROS_Pose) # type: ignore[no-redef]
+def convert_whatever(from_: ROS_Transform) -> ROS_Pose:  # noqa: F811
     return ROS_Pose(from_.data2)
 
 
-@dispatch  # type: ignore[no-redef]
-def convert(to: Val[ROS_Pose], from_: SpatialMath_SE3) -> ROS_Pose:  # noqa: F811
+@conversion_method(type_from=SpatialMath_SE3, type_to=ROS_Pose)# type: ignore[no-redef]
+def convert_whatever(from_: SpatialMath_SE3) -> ROS_Pose:  # noqa: F811
     return ROS_Pose(from_.data5)

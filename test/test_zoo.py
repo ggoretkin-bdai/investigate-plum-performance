@@ -2,19 +2,14 @@
 import random
 import functools
 
-from example_py_multiple_dispatch.zoo import BD_SE3Pose, ROS_Pose, ROS_Transform, SpatialMath_SE3, convert
+from example_py_multiple_dispatch.zoo import BD_SE3Pose, ROS_Pose, ROS_Transform, SpatialMath_SE3
 from plum import Val  # type: ignore
-import plum
-
-# https://github.com/beartype/plum/issues/86
-@functools.cache
-def ValMaker(arg):
-    return Val(arg)
+from plum import convert
 
 def test_1() -> None:
     # ultimately, we'd like to avoid the use of `Val here`
     # See https://github.com/beartype/plum/issues/85
-    x = convert(ValMaker(BD_SE3Pose), ROS_Pose("args"))
+    x = convert(ROS_Pose("args"), BD_SE3Pose)
     assert isinstance(x, BD_SE3Pose)
     assert x.data4 == "args"
 
@@ -24,7 +19,7 @@ def workload_multiple_dispatch(work_amount: int = 50_000) -> int:
     random.seed(1234)
     for i in range(work_amount):
         from_ = random.choice([ROS_Transform("args1"), SpatialMath_SE3("args22")])
-        to = convert(ValMaker(ROS_Pose), from_)
+        to = convert(from_, ROS_Pose)
         use_the_result += len(to.data1)
     return use_the_result
 
