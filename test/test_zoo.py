@@ -5,14 +5,20 @@ from example_py_multiple_dispatch.zoo import BD_SE3Pose, ROS_Pose, ROS_Transform
 from plum import Val  # type: ignore
 import plum
 
-# https://github.com/beartype/plum/issues/86#issuecomment-1607741292
-Val.__faithful__ = True
-plum.clear_all_cache()
+# https://github.com/beartype/plum/issues/86
+_cache_val = {}
+def ValMaker(arg):
+    if arg in _cache_val.keys():
+        return _cache_val[arg]
+    else:
+        v = Val(arg)
+        _cache_val[arg] = v
+        return v
 
 def test_1() -> None:
     # ultimately, we'd like to avoid the use of `Val here`
     # See https://github.com/beartype/plum/issues/85
-    x = convert(Val(BD_SE3Pose), ROS_Pose("args"))
+    x = convert(ValMaker(BD_SE3Pose), ROS_Pose("args"))
     assert isinstance(x, BD_SE3Pose)
     assert x.data4 == "args"
 
@@ -22,7 +28,7 @@ def workload_multiple_dispatch(work_amount: int = 50_000) -> int:
     random.seed(1234)
     for i in range(work_amount):
         from_ = random.choice([ROS_Transform("args1"), SpatialMath_SE3("args22")])
-        to = convert(Val(ROS_Pose), from_)
+        to = convert(ValMaker(ROS_Pose), from_)
         use_the_result += len(to.data1)
     return use_the_result
 

@@ -12,23 +12,22 @@ pytest .
 
 ## Investigating performance
 ```
-$ pytest --durations=10 .
-=================================================================================== test session starts ====================================================================================
-platform linux -- Python 3.10.6, pytest-7.3.2, pluggy-1.0.0
-rootdir: /home/ggoretkin/repos/bdai/projects/example_py_multiple_dispatch
-plugins: anyio-3.7.0, libtmux-0.21.1
-collected 8 items                                                                                                                                                                          
+ pytest --durations=10 .
+============================= test session starts ==============================
+platform linux -- Python 3.10.6, pytest-7.4.0, pluggy-1.2.0
+rootdir: /home/ggoretkin/repos/investigate-plum-performance
+collected 8 items                                                              
 
-test/test_foo.py .x..                                                                                                                                                                [ 50%]
-test/test_zoo.py ....                                                                                                                                                                [100%]
+test/test_foo.py .x..                                                    [ 50%]
+test/test_zoo.py ....                                                    [100%]
 
-=================================================================================== slowest 10 durations ===================================================================================
-1.22s call     test/test_zoo.py::test_workload_functional_equivalence
-1.15s call     test/test_zoo.py::test_perf_multiple_dispatch
+============================= slowest 10 durations =============================
+0.22s call     test/test_zoo.py::test_workload_functional_equivalence
+0.19s call     test/test_zoo.py::test_perf_multiple_dispatch
 0.03s call     test/test_zoo.py::test_perf_elif_chain
 
 (7 durations < 0.005s hidden.  Use -vv to show these durations.)
-=============================================================================== 7 passed, 1 xfailed in 2.45s ===============================================================================
+========================= 7 passed, 1 xfailed in 0.48s =========================
 ```
 
 ## Investigating performance, continued
