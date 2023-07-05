@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Type
 
 from plum import Val, dispatch, conversion_method  # type: ignore
 import plum
@@ -94,3 +94,23 @@ def convert_whatever(from_: SpatialMath_SE3) -> ROS_Pose: # noqa: F811
     return ROS_Pose(from_.data5)
 
 # at this point, `convert_whatever` is None, because the decorator does not return anything.
+
+# ---- 
+# try recommendation from https://github.com/beartype/plum/issues/85#issuecomment-1615339947
+# note this is NOT `plum.convert`
+
+@dispatch # type: ignore[no-redef]
+def convert(from_ : ROS_Pose, to : Type[BD_SE3Pose]) -> BD_SE3Pose: # noqa: F811
+    return BD_SE3Pose(from_.data1)
+
+@dispatch # type: ignore[no-redef]
+def convert(from_: SpatialMath_SE3, to : Type[BD_SE3Pose]) -> BD_SE3Pose: # noqa: F811
+    return BD_SE3Pose(from_.data5)
+
+@dispatch # type: ignore[no-redef]
+def convert(from_: ROS_Transform, to : Type[ROS_Pose]) -> ROS_Pose: # noqa: F811
+    return ROS_Pose(from_.data2)
+
+@dispatch # type: ignore[no-redef]
+def convert(from_: SpatialMath_SE3, to : Type[ROS_Pose]) -> ROS_Pose: # noqa: F811
+    return ROS_Pose(from_.data5)

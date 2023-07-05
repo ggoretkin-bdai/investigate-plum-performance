@@ -4,7 +4,14 @@ import functools
 
 from example_py_multiple_dispatch.zoo import BD_SE3Pose, ROS_Pose, ROS_Transform, SpatialMath_SE3
 from plum import Val  # type: ignore
-from plum import convert
+
+#CONVERT_TYPE = "PLUM_BUILT_IN"
+CONVERT_TYPE = "EXTENSIBLE"
+
+if CONVERT_TYPE == "PLUM_BUILT_IN":
+    from plum import convert
+elif CONVERT_TYPE == "EXTENSIBLE":
+    from example_py_multiple_dispatch.zoo import convert
 
 def test_1() -> None:
     # ultimately, we'd like to avoid the use of `Val here`
